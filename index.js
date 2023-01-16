@@ -23,8 +23,8 @@ app.use(router.allowedMethods());
 
 //EJS 템플릿 엔진
 render(app,{
-    //layout:null,
-    layout:'layouts/web',
+    layout:null,
+    //layout:'layouts/web',
     root:path.join(__dirname,'/views'),
     viewExt:'ejs',cache:false,
 });
