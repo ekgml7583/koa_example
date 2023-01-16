@@ -7,13 +7,23 @@ const {myLogging}=require('./middlware/logging');
 const webController=require('./web/controller');
 const apiUserController=require('./api/user/controller');
 const apiFeedController=require('./api/feed/controller');
+const { verify } = require('./middlware/auth');
 
 router.use(myLogging);
 
 router.get('/', webController.home);
 router.get('/page/:page', webController.page);
 
+
+router.post('/api/user/register',apiUserController.register);
+router.post('/api/user/login',apiUserController.login);
+
+
+router.use(verify);
+
 router.get('/api/user/:id',apiUserController.info);
+
+
 
 router.get('/api/feed',apiFeedController.index);
 router.post('/api/feed',apiFeedController.store);
