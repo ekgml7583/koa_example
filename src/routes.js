@@ -1,5 +1,10 @@
 const Router = require('@koa/router');
 const router = new Router();
+const multer=require('@koa/multer');
+const path=require('path');
+const upload=multer({
+    dest:path.resolve(__dirname,'../','storage')
+})
 
 const {myLogging}=require('./middlware/logging');
 
@@ -10,6 +15,8 @@ const apiFeedController=require('./api/feed/controller');
 const { verify } = require('./middlware/auth');
 
 router.use(myLogging);
+
+router.post('/file/upload',upload.single('file'),require('./api/file/controller').upload);
 
 router.get('/', webController.home);
 router.get('/page/:page', webController.page);
