@@ -1,13 +1,17 @@
 const Router = require('@koa/router');
 const router = new Router();
 
+const {myLogging}=require('./middlware/logging');
+
 
 const webController=require('./web/controller');
 const apiUserController=require('./api/user/controller');
 const apiFeedController=require('./api/feed/controller');
 
-router.get('/',webController.home);
-router.get('/page/:page',webController.page);
+router.use(myLogging);
+
+router.get('/', webController.home);
+router.get('/page/:page', webController.page);
 
 router.get('/api/user/:id',apiUserController.info);
 
@@ -21,12 +25,12 @@ router.delete('/api/feed/:id',apiFeedController.delete);
 router.get('/', (ctx, next) => {
     ctx.body = 'Hello World';
 });
-
+*//*
 router.get('/page/:page',(ctx,next)=>{
     let page=ctx.params.page;
     ctx.body=`${page} 페이지`;
-});*/
-
+});
+*/
 /*
 router.get('/user/:id',(ctx,next)=>{
     let id=ctx.params.id;
