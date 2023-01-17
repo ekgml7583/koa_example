@@ -1,5 +1,5 @@
 const jwt=require('jsonwebtoken');
-const SECRET_KEY='my-secret-key';
+const {register}=require('./query');
 
 exports.info=(ctx,next)=>{
     let id=ctx.params.id;
@@ -8,8 +8,17 @@ exports.info=(ctx,next)=>{
 
 exports.register=async(ctx,next)=>{
     //회원가입 처리 모듈
-    let token=await generteToken({name:'my-name'});
-    ctx.body=token;
+    let {email,password,name}=ctx.request.body;
+
+    let {affectRows}= await register(email,password,name);
+
+    if(affectRows>0){
+        let token=await ganerteToken({name});
+        ctx.body=token;
+
+    }else{
+        ctx.body={result:"fail"};
+    }
 }
 
 exports.login=async(ctx,next)=>{
