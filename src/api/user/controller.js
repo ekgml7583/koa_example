@@ -1,5 +1,6 @@
 const jwt=require('jsonwebtoken');
 const {register}=require('./query');
+const crypto=require('crypto');
 
 exports.info=(ctx,next)=>{
     let id=ctx.params.id;
@@ -24,17 +25,19 @@ exports.register=async(ctx,next)=>{
 exports.login=async(ctx,next)=>{
     //로그인 모듈
 
-    let {id, pw}=ctx.request.body; 
-    let result="";
+    let {email, password}=ctx.request.body; 
+    let result=crypto.pdkdf2Sync(password,process.env.APP_KEY,50,255,'sha512');
 
+
+    let item = await this.login(email,result.toString('base64'));
     
-    if(id==='admin'&&pw==='1234'){
-        result=await generteToken({name :'abc'});
-    }else{
-        result="아이디 혹은 비밀번호가 올바르지 않습니다.";
+    if(itme==null){
+        ctx.body={result:"fail"};
+    } 
+    else{
+        let token=await generteToken({name:item.name});
+        ctx.body=token;
     }
-    //let token=await generteToken({name: 'my-name'});
-    ctx.body=result;
 }
 
 
