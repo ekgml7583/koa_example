@@ -1,6 +1,7 @@
 const jwt=require('jsonwebtoken');
-const {register}=require('./query');
-const crypto=require('crypto');
+const {register, login}=require('./query');
+const crypto = require('crypto');
+
 
 exports.info=(ctx,next)=>{
     let id=ctx.params.id;
@@ -11,10 +12,11 @@ exports.register=async(ctx,next)=>{
     //회원가입 처리 모듈
     let {email,password,name}=ctx.request.body;
 
-    let {affectRows}= await register(email,password,name);
+    let result= crypto.pbkdf2Sync(password,process.env.APP_KEY,50,100,'sha512');
+    let {affectedRows}= await register(email,result.toString('base64'),name);
 
-    if(affectRows>0){
-        let token=await ganerteToken({name});
+    if(affectedRows>0){
+        let token=await generteToken({name});
         ctx.body=token;
 
     }else{
@@ -25,13 +27,13 @@ exports.register=async(ctx,next)=>{
 exports.login=async(ctx,next)=>{
     //로그인 모듈
 
-    let {email, password}=ctx.request.body; 
-    let result=crypto.pdkdf2Sync(password,process.env.APP_KEY,50,255,'sha512');
-
-
-    let item = await this.login(email,result.toString('base64'));
+    let {email, password} = ctx.request.body; 
     
-    if(itme==null){
+    let result= crypto.pbkdf2Sync(password,process.env.APP_KEY,50,100,'sha512');
+
+    let item = await login(email,result.toString('base64'));
+    
+    if(item==null){
         ctx.body={result:"fail"};
     } 
     else{
